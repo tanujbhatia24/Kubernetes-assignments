@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('tanuj-dockerhub')
         BACKEND_REPO = 'https://github.com/tanujbhatia24/backend_kube.git'
         FRONTEND_REPO = 'https://github.com/tanujbhatia24/frontend_kube.git'
     }
+
     stages {
         stage('Clone Backend') {
             steps {
@@ -32,11 +32,13 @@ pipeline {
 
                         def backendChanged = sh(script: "git diff --quiet HEAD~1 HEAD . || echo changed", returnStdout: true).trim()
                         if (backendChanged == "changed") {
-                            sh """
-                                docker build -t ${env.BACKEND_TAG} .
-                                echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
-                                docker push ${env.BACKEND_TAG}
-                            """
+                            withCredentials([usernamePassword(credentialsId: 'tanuj-dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                sh """
+                                    docker build -t $BACKEND_TAG .
+                                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                                    docker push $BACKEND_TAG
+                                """
+                            }
                         } else {
                             echo "No backend changes detected. Skipping backend image build."
                         }
@@ -54,11 +56,13 @@ pipeline {
 
                         def frontendChanged = sh(script: "git diff --quiet HEAD~1 HEAD . || echo changed", returnStdout: true).trim()
                         if (frontendChanged == "changed") {
-                            sh """
-                                docker build -t ${env.FRONTEND_TAG} .
-                                echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
-                                docker push ${env.FRONTEND_TAG}
-                            """
+                            withCredentials([usernamePassword(credentialsId: 'tanuj-dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                                sh """
+                                    docker build -t $FRONTEND_TAG .
+                                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                                    docker push $FRONTEND_TAG
+                                """
+                            }
                         } else {
                             echo "No frontend changes detected. Skipping frontend image build."
                         }
@@ -70,7 +74,6 @@ pipeline {
         stage('Deploy via Helm') {
             steps {
                 script {
-                    // Inject the image tags into Helm values dynamically
                     sh """
                         helm upgrade --install mern ./mern-chart \
                           --set image.backend=${env.BACKEND_TAG} \
@@ -79,6 +82,12 @@ pipeline {
                     """
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline execution completed."
         }
     }
 }
