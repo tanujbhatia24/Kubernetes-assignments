@@ -10,23 +10,45 @@ pipeline {
     }
 
     stages {
-
-        stage('Clone Repos') {
+        stage('Clone and Check for Changes') {
             steps {
-                dir('frontend') {
-                    git url: "${env.FRONTEND_REPO}"
-                }
-                dir('backend') {
-                    git url: "${env.BACKEND_REPO}"
+                script {
+                    def frontendChanged = false
+                    def backendChanged = false
+
+                    dir('frontend') {
+                        git url: "${env.FRONTEND_REPO}"
+                        frontendChanged = sh(script: "git rev-parse HEAD > ../.frontend_commit && git diff --quiet HEAD || echo changed", returnStdout: true).contains("changed")
+                    }
+                    dir('backend') {
+                        git url: "${env.BACKEND_REPO}"
+                        backendChanged = sh(script: "git rev-parse HEAD > ../.backend_commit && git diff --quiet HEAD || echo changed", returnStdout: true).contains("changed")
+                    }
+
+                    if (!frontendChanged && !backendChanged) {
+                        echo "No new revisions to build."
+                        currentBuild.result = 'SUCCESS'
+                        // Exit early
+                        return
+                    }
                 }
             }
         }
 
         stage('Build Docker Images') {
+            when {
+                expression {
+                    fileExists('.frontend_commit') || fileExists('.backend_commit')
+                }
+            }
             steps {
                 script {
-                    sh "docker build -t ${FRONTEND_IMAGE}:latest ./frontend"
-                    sh "docker build -t ${BACKEND_IMAGE}:latest ./backend"
+                    if (fileExists('.frontend_commit')) {
+                        sh "docker build -t ${FRONTEND_IMAGE}:latest ./frontend"
+                    }
+                    if (fileExists('.backend_commit')) {
+                        sh "docker build -t ${BACKEND_IMAGE}:latest ./backend"
+                    }
                 }
             }
         }
@@ -35,8 +57,12 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                    sh "docker push ${FRONTEND_IMAGE}:latest"
-                    sh "docker push ${BACKEND_IMAGE}:latest"
+                    if (fileExists('.frontend_commit')) {
+                        sh "docker push ${FRONTEND_IMAGE}:latest"
+                    }
+                    if (fileExists('.backend_commit')) {
+                        sh "docker push ${BACKEND_IMAGE}:latest"
+                    }
                 }
             }
         }
