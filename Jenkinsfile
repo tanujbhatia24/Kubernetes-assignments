@@ -10,58 +10,72 @@ pipeline {
     }
 
     stages {
+
         stage('Clone and Check for Changes') {
             steps {
                 script {
-                    def frontendChanged = false
-                    def backendChanged = false
+                    def frontendCommit = ''
+                    def backendCommit = ''
+                    def previousFrontendCommit = readFile(file: '.last_frontend_commit', encoding: 'UTF-8')?.trim() ?: ''
+                    def previousBackendCommit = readFile(file: '.last_backend_commit', encoding: 'UTF-8')?.trim() ?: ''
 
                     dir('frontend') {
                         git url: "${env.FRONTEND_REPO}"
-                        frontendChanged = sh(script: "git rev-parse HEAD > ../.frontend_commit && git diff --quiet HEAD || echo changed", returnStdout: true).contains("changed")
-                    }
-                    dir('backend') {
-                        git url: "${env.BACKEND_REPO}"
-                        backendChanged = sh(script: "git rev-parse HEAD > ../.backend_commit && git diff --quiet HEAD || echo changed", returnStdout: true).contains("changed")
+                        frontendCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
                     }
 
+                    dir('backend') {
+                        git url: "${env.BACKEND_REPO}"
+                        backendCommit = sh(script: "git rev-parse HEAD", returnStdout: true).trim()
+                    }
+
+                    def frontendChanged = (frontendCommit != previousFrontendCommit)
+                    def backendChanged = (backendCommit != previousBackendCommit)
+
                     if (!frontendChanged && !backendChanged) {
-                        echo "No new revisions to build."
+                        echo "✅ No new revisions to build."
                         currentBuild.result = 'SUCCESS'
                         // Exit early
                         return
                     }
+
+                    // Save new commit hashes for next run
+                    writeFile file: '.last_frontend_commit', text: frontendCommit
+                    writeFile file: '.last_backend_commit', text: backendCommit
+
+                    // Set env vars for later stages
+                    env.FRONTEND_CHANGED = "${frontendChanged}"
+                    env.BACKEND_CHANGED = "${backendChanged}"
                 }
             }
         }
 
         stage('Build Docker Images') {
-            when {
-                expression {
-                    fileExists('.frontend_commit') || fileExists('.backend_commit')
-                }
-            }
             steps {
                 script {
-                    if (fileExists('.frontend_commit')) {
+                    if (env.FRONTEND_CHANGED == 'true') {
+                        echo "🔧 Building Frontend Docker image"
                         sh "docker build -t ${FRONTEND_IMAGE}:latest ./frontend"
                     }
-                    if (fileExists('.backend_commit')) {
+                    if (env.BACKEND_CHANGED == 'true') {
+                        echo "🔧 Building Backend Docker image"
                         sh "docker build -t ${BACKEND_IMAGE}:latest ./backend"
                     }
                 }
             }
         }
 
-        stage('Push Images to Registry') {
+        stage('Push Images to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                    if (fileExists('.frontend_commit')) {
-                        sh "docker push ${FRONTEND_IMAGE}:latest"
-                    }
-                    if (fileExists('.backend_commit')) {
-                        sh "docker push ${BACKEND_IMAGE}:latest"
+                    script {
+                        sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
+                        if (env.FRONTEND_CHANGED == 'true') {
+                            sh "docker push ${FRONTEND_IMAGE}:latest"
+                        }
+                        if (env.BACKEND_CHANGED == 'true') {
+                            sh "docker push ${BACKEND_IMAGE}:latest"
+                        }
                     }
                 }
             }
@@ -70,10 +84,11 @@ pipeline {
         stage('Deploy with Helm') {
             steps {
                 script {
+                    echo "🚀 Deploying using Helm"
                     sh """
                         helm upgrade --install mern-app ./helm-chart \
-                            --set frontend.image.repository=${FRONTEND_IMAGE} \
-                            --set backend.image.repository=${BACKEND_IMAGE}
+                          --set frontend.image.repository=${FRONTEND_IMAGE} \
+                          --set backend.image.repository=${BACKEND_IMAGE}
                     """
                 }
             }
