@@ -133,6 +133,6 @@ Minikube<br>
 ![image](https://github.com/user-attachments/assets/ee4fb4c7-a27b-40b7-abd9-972edd0923c2)<br>
 ---
 
-## Author
-Tanuj Bhatia
+## Author<br>
+Tanuj Bhatia<br>
 DockerHub: tanujbhatia24
