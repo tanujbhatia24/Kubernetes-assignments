@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = credentials('dockerhub')
+        DOCKER_CREDENTIALS = credentials('tanuj-dockerhub')
         BACKEND_REPO = 'https://github.com/tanujbhatia24/backend_kube.git'
         FRONTEND_REPO = 'https://github.com/tanujbhatia24/frontend_kube.git'
     }
