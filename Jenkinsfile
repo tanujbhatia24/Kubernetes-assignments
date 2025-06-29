@@ -83,6 +83,8 @@ pipeline {
             steps {
                 sh """
                     helm upgrade --install mern-chart ./mern-chart \
+                        --namespace mern
+                        --create-namespace
                         --set frontend.image.repository=${FRONTEND_IMAGE} \
                         --set backend.image.repository=${BACKEND_IMAGE}
                 """
