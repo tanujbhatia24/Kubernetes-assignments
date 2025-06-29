@@ -120,18 +120,18 @@ Minikube<br>
 ![image](https://github.com/user-attachments/assets/feea7608-bf82-4880-a9c6-1ec16218b0e8)<br>
 
 - Mongo DB validation snapshot<br>
-<img width="418" alt="image" src="https://github.com/user-attachments/assets/f4b1bc55-0cb2-4166-8f7f-ac4440e661c3" /><br>
-<img width="528" alt="image" src="https://github.com/user-attachments/assets/008f2368-dcdc-4bee-8f93-0bb32395299a" /><br>
+![image](https://github.com/user-attachments/assets/d1826381-a98f-4425-a899-62e492cdbc61)<br>
+![image](https://github.com/user-attachments/assets/7f8d9cd8-0581-4d4b-81e7-62bf65daffc1)<br>
 
 - Pods count before jenkins pipeline trigger snapshot<br>
-<img width="323" alt="image" src="https://github.com/user-attachments/assets/8266dc7a-35ab-4525-be13-a0acf5c2c8cc" /><br>
+![image](https://github.com/user-attachments/assets/dda1f1b9-3343-42ac-9958-392a0f5b147c)<br>
 
 - Pods Count after jenkins pipeline trigger snapshot (replicas set to 2)<br>
-![image](https://github.com/user-attachments/assets/99d362d4-6fa4-4953-9b9d-339c2b65bbb8)<br>
+![image](https://github.com/user-attachments/assets/7f11ce62-5e55-4da6-9581-9382b2f6e254)<br>
 
 - Jenkins validation snapshot<br>
-![image](https://github.com/user-attachments/assets/d4078041-b93b-4f12-abec-5b3d52a6ef10)<br>
-![image](https://github.com/user-attachments/assets/ee4fb4c7-a27b-40b7-abd9-972edd0923c2)<br>
+![image](https://github.com/user-attachments/assets/48aa3ed1-9e76-4298-be63-d1f8eed72d56)<br>
+![image](https://github.com/user-attachments/assets/f03795ee-8278-4255-9059-c689cdca9e24)<br>
 ---
 
 ## Author<br>
