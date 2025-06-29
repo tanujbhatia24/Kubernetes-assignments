@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_CREDENTIALS = credentials('tanuj-dockerhub')
+        BACKEND_IMAGE = 'tanujbhatia24/backend_kube:latest'
+        FRONTEND_IMAGE = 'tanujbhatia24/frontend_kube:latest'
+    }
+
+    stages {
+        stage('Clone Backend') {
+            steps {
+                git url: 'https://github.com/tanujbhatia24/backend_kube.git', branch: 'main'
+            }
+        }
+
+        stage('Build & Push Backend Image') {
+            steps {
+                script {
+                    sh '''
+                        echo "[INFO] Building backend image"
+                        docker build -t $BACKEND_IMAGE .
+                        echo "[INFO] Logging into DockerHub"
+                        echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
+                        echo "[INFO] Pushing backend image"
+                        docker push $BACKEND_IMAGE
+                    '''
+                }
+            }
+        }
+
+        stage('Clone Frontend') {
+            steps {
+                dir('frontend') {
+                    git url: 'https://github.com/tanujbhatia24/frontend_kube.git', branch: 'main'
+                }
+            }
+        }
+
+        stage('Build & Push Frontend Image') {
+            steps {
+                dir('frontend') {
+                    script {
+                        sh '''
+                            echo "[INFO] Building frontend image"
+                            docker build -t $FRONTEND_IMAGE .
+                            echo "[INFO] Logging into DockerHub"
+                            echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin
+                            echo "[INFO] Pushing frontend image"
+                            docker push $FRONTEND_IMAGE
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Deploy with Helm') {
+            steps {
+                sh '''
+                    echo "[INFO] Deploying with Helm"
+                    helm upgrade --install mern ./mern-chart --namespace default --create-namespace
+                '''
+            }
+        }
+    }
+}
