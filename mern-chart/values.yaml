@@ -2,8 +2,8 @@ mongoUrl: "mongodb://mongo:27017/blog_mern"
 
 backend:
   image: tanujbhatia24/backend:latest
-  replicaCount: 3
+  replicaCount: 2
 
 frontend:
   image: tanujbhatia24/frontend:latest
-  replicaCount: 3
+  replicaCount: 2
