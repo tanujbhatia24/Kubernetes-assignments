@@ -135,5 +135,5 @@ Minikube<br>
 
 ## Author<br>
 Tanuj Bhatia<br>
-DockerHub: tanujbhatia24
+DockerHub: tanujbhatia24<br>
 NOTE - This application doesn't have any footprints left on AWS.
