@@ -101,22 +101,23 @@ helm history mern-chart -n mern
 
 ## Validation Snapshots
 - Docker Images validation snanshot<br>
-![image](https://github.com/user-attachments/assets/a5ea3f75-64ba-49b7-be20-48ebbc275298)<br>
+![image](https://github.com/user-attachments/assets/d7f5e3b1-aec3-4596-91a1-8942e1104090)<br>
 
 - Kubectl pod & service validation snapshot<br>
-![image](https://github.com/user-attachments/assets/4d91cb13-ec33-4df7-80e1-41d0c125f175)<br>
+![image](https://github.com/user-attachments/assets/4ca580b9-5af7-41c5-bb53-1f1716fd75e5)<br>
 
 - Frontend url validation snapshot<br>
 Port forwarding<br>
-![image](https://github.com/user-attachments/assets/71d26b2d-2afd-4ef5-be15-eb349cfc1c64)<br>
-![image](https://github.com/user-attachments/assets/67a9f6cd-e594-4727-88df-25442e67022d)<br>
+![image](https://github.com/user-attachments/assets/ae1dc45c-b973-4d02-ae69-ca070b67a5c4)<br>
+![image](https://github.com/user-attachments/assets/427ecbd7-764e-4b37-9ebd-7f48cdefea41)<br>
+
 Minikube<br>
-![image](https://github.com/user-attachments/assets/787ff36c-54e7-4fc1-bb66-1ff6777c9d3c)<br>
-![image](https://github.com/user-attachments/assets/da1b5a65-2117-471b-a1c9-e8202223ac93)<br>
+![image](https://github.com/user-attachments/assets/23ede8ee-b997-403a-85f0-b7e2c46f90e0)<br>
+![image](https://github.com/user-attachments/assets/0c89fb1b-1c47-4eeb-b65d-b8aa4a37adc1)<br>
 
 - Backend url validation snapshot<br>
-![image](https://github.com/user-attachments/assets/88d3e837-992a-49b5-97bf-be0ec78544c1)<br>
-![image](https://github.com/user-attachments/assets/96a1fd77-96c6-4dd6-b02f-ecb0ae58af84)<br>
+![image](https://github.com/user-attachments/assets/2cb7d179-68c7-4236-838c-f4b0c77fda12)<br>
+![image](https://github.com/user-attachments/assets/feea7608-bf82-4880-a9c6-1ec16218b0e8)<br>
 
 - Mongo DB validation snapshot<br>
 <img width="418" alt="image" src="https://github.com/user-attachments/assets/f4b1bc55-0cb2-4166-8f7f-ac4440e661c3" /><br>
