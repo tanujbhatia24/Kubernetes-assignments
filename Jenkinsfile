@@ -85,6 +85,7 @@ pipeline {
                     helm upgrade --install mern-chart ./mern-chart \
                         --namespace mern \
                         --create-namespace \
+                        --values ./mern-chart/values.yaml
                 """
             }
         }
