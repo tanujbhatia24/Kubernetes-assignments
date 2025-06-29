@@ -15,13 +15,13 @@ pipeline {
                 script {
                     // Clone Frontend
                     dir('frontend') {
-                        git url: "${env.FRONTEND_REPO}"
+                        git branch: 'main', url: "${env.FRONTEND_REPO}"
                         sh 'git rev-parse HEAD > ../.frontend_commit'
                     }
 
                     // Clone Backend
                     dir('backend') {
-                        git url: "${env.BACKEND_REPO}"
+                        git branch: 'main', url: "${env.BACKEND_REPO}"
                         sh 'git rev-parse HEAD > ../.backend_commit'
                     }
 
