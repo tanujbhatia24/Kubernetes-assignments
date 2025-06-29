@@ -10,7 +10,12 @@ pipeline {
         stage('Clone Backend') {
             steps {
                 dir('backend') {
-                    git url: "${BACKEND_REPO}", branch: 'main'
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[url: "${BACKEND_REPO}"]],
+                        extensions: [[$class: 'CloneOption', depth: 5, noTags: false, shallow: false]]
+                    ])
                 }
             }
         }
@@ -18,7 +23,12 @@ pipeline {
         stage('Clone Frontend') {
             steps {
                 dir('frontend') {
-                    git url: "${FRONTEND_REPO}", branch: 'main'
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        userRemoteConfigs: [[url: "${FRONTEND_REPO}"]],
+                        extensions: [[$class: 'CloneOption', depth: 5, noTags: false, shallow: false]]
+                    ])
                 }
             }
         }
@@ -30,7 +40,11 @@ pipeline {
                         def commitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                         env.BACKEND_TAG = "tanujbhatia24/backend_kube:${commitHash}"
 
-                        def backendChanged = sh(script: "git diff --quiet HEAD~1 HEAD . || echo changed", returnStdout: true).trim()
+                        def backendChanged = sh(
+                            script: "[ \$(git rev-list --count HEAD) -gt 1 ] && git diff --quiet HEAD~1 HEAD . || echo changed",
+                            returnStdout: true
+                        ).trim()
+
                         if (backendChanged == "changed") {
                             withCredentials([usernamePassword(credentialsId: 'tanuj-dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                                 sh """
@@ -54,7 +68,11 @@ pipeline {
                         def commitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                         env.FRONTEND_TAG = "tanujbhatia24/frontend_kube:${commitHash}"
 
-                        def frontendChanged = sh(script: "git diff --quiet HEAD~1 HEAD . || echo changed", returnStdout: true).trim()
+                        def frontendChanged = sh(
+                            script: "[ \$(git rev-list --count HEAD) -gt 1 ] && git diff --quiet HEAD~1 HEAD . || echo changed",
+                            returnStdout: true
+                        ).trim()
+
                         if (frontendChanged == "changed") {
                             withCredentials([usernamePassword(credentialsId: 'tanuj-dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                                 sh """
