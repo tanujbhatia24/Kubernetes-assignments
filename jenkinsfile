@@ -6,7 +6,6 @@ pipeline {
         BACKEND_REPO = 'https://github.com/tanujbhatia24/backend_kube.git'
         FRONTEND_REPO = 'https://github.com/tanujbhatia24/frontend_kube.git'
     }
-
     stages {
         stage('Clone Backend') {
             steps {
