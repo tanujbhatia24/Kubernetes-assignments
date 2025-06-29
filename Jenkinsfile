@@ -5,8 +5,8 @@ pipeline {
         REGISTRY = "tanujbhatia24"
         FRONTEND_REPO = "https://github.com/tanujbhatia24/frontend_kube.git"
         BACKEND_REPO = "https://github.com/tanujbhatia24/backend_kube.git"
-        FRONTEND_IMAGE = "${REGISTRY}/mern-frontend"
-        BACKEND_IMAGE = "${REGISTRY}/mern-backend"
+        FRONTEND_IMAGE = "${REGISTRY}/frontend"
+        BACKEND_IMAGE = "${REGISTRY}/backend"
     }
 
     stages {
