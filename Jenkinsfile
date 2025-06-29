@@ -82,7 +82,7 @@ pipeline {
         stage('Deploy with Helm') {
             steps {
                 sh """
-                    helm upgrade --install mern-app ./mern-chart \
+                    helm upgrade --install mern-chart ./mern-chart \
                         --set frontend.image.repository=${FRONTEND_IMAGE} \
                         --set backend.image.repository=${BACKEND_IMAGE}
                 """
