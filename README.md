@@ -110,7 +110,6 @@ helm history mern-chart -n mern
 Port forwarding<br>
 ![image](https://github.com/user-attachments/assets/ae1dc45c-b973-4d02-ae69-ca070b67a5c4)<br>
 ![image](https://github.com/user-attachments/assets/427ecbd7-764e-4b37-9ebd-7f48cdefea41)<br>
-
 Minikube<br>
 ![image](https://github.com/user-attachments/assets/23ede8ee-b997-403a-85f0-b7e2c46f90e0)<br>
 ![image](https://github.com/user-attachments/assets/0c89fb1b-1c47-4eeb-b65d-b8aa4a37adc1)<br>
