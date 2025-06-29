@@ -87,7 +87,7 @@ pipeline {
                         --create-namespace \
                         --set frontend.image.repository=${FRONTEND_IMAGE} \
                         --set frontend.image.tag=latest \
-                        --set backend.image.repository=${BACKEND_IMAGE}
+                        --set backend.image.repository=${BACKEND_IMAGE}\
                         --set backend.image.tag=latest
                 """
             }
