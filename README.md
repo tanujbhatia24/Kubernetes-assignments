@@ -77,8 +77,11 @@ minikube service frontend-service -n mern
 ATLAS_URI=mongodb://mongo:27017/blog_mern
 ```
 ### .env file in Frontend
+Based on your setup you need to update.
 ```bash
 REACT_APP_API_BASE_URL=http://backend-service:3000
+OR
+REACT_APP_API_BASE_URL=http://localhost:3000
 ```
 ---
 
